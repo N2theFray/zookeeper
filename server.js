@@ -7,6 +7,8 @@ const app = express()
 app.use(express.urlencoded({ extended: true}))
 //pars incoming JSON data
 app.use(express.json())
+//gets the style sheets to work
+app.use(express.static('public'))
 
 const { animals } = require('./data/animals.json')
 
@@ -113,8 +115,26 @@ app.post('/data/animals', (req, res) => {
     //add animal to json file and animals array in this function
     const animal = createNewAnimal(req.body, animals)
     res.json(req.body)
-    }
+     }
 })
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
+app.get('/animals', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/animals.html'))
+})
+
+app.get('/zookeepers', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/zookeepers.html'))
+})
+
+
+//wildcard route should always go at the end
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}`)
